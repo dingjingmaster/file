@@ -52,6 +52,23 @@ static inline bool check_is_magic_vhd (const char* buffer, cint64 bufferLen)
     return false;
 }
 
+static inline bool check_is_jar (const char* buffer, cint64 bufferLen)
+{
+    C_RETURN_VAL_IF_FAIL(buffer, false);
+
+    static const int jarFlagFin = 1024;
+    static const char* jarFlag = "META-INF/MANIFEST.MF";
+    const int jarFlagLen = (int) strlen (jarFlag);
+    if (check_is_magic(buffer, bufferLen, ZIP_MAGIC, ZIP_MAGIC_SIZE, 0)) {
+        for (int i = 30; i < jarFlagFin; i++) {
+            if (!memcmp(buffer + i, jarFlag, jarFlagLen)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 
 FileRet file_parse(const char* filename, FileTypeDetail* detail)
 {
@@ -107,6 +124,9 @@ FileRet file_parse(const char* filename, FileTypeDetail* detail)
 
         if (c_str_has_suffix(fileName, ".java") && check_is_java_source(fileHeader)) {
             detail->fileType = FT_JAVA_SOURCE;
+        }
+        else if (check_is_jar(fileHeader, fileSize)) {
+            detail->fileType = FT_JAR;
         }
         else if (check_is_magic(fileHeader, fileSize, ZIP_MAGIC, ZIP_MAGIC_SIZE, 0)) {
             detail->fileType = FT_ZIP;
@@ -255,7 +275,7 @@ const char* file_get_type_string(FileTypeDetail* detail)
             return "LZH(Lempel-Ziv-Haruyasu) file";
         }
         case FT_XAR: {
-            return "XAR(eXtensible ARchive Format) file";
+            return "XAR(Extensible Archive Format) file";
         }
         case FT_DEB: {
             return "Debian-binary deb file";
@@ -298,6 +318,9 @@ const char* file_get_type_string(FileTypeDetail* detail)
         }
         case FT_MAR_130: {
             return "MAR 130";
+        }
+        case FT_JAR: {
+            return "JAR(Java Archive) file";
         }
         case FT_TAR: {
             return "TAR file";

@@ -27,3 +27,4 @@
 - [x] wim
 - [x] swf
 - [x] mar
+- [x] jar

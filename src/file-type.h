@@ -53,6 +53,7 @@ typedef enum
     FT_DEB,
     FT_ELF,
     FT_ISO,
+    FT_JAR,
     FT_LZH,
     FT_PMD,
     FT_RPM,
@@ -210,8 +211,8 @@ typedef struct
 /* mar - stop */
 
 /* jar - start */
-#define JAR_MAGIC                   ""
-#define JAR_MAGIC_SIZE              4
+#define JAR_MAGIC                   "PK\003\004\024\000\010\000\010\000"
+#define JAR_MAGIC_SIZE              10
 /* jar - end   */
 
 
