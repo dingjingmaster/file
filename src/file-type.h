@@ -36,11 +36,27 @@ typedef enum
 {
     FT_UNKNOWN = 0,
     FT_DIR,
-    FT_CHR_DEV,
-    FT_BLK_DEV,
     FT_FIFO,
     FT_LINK,
+    FT_EMPTY,
+    FT_CHR_DEV,
+    FT_BLK_DEV,
+
+    FT_Z,
+    FT_GZ,
+    FT_XZ,
+    FT_7Z,
+    FT_ARJ,
+    FT_BZ2,
+    FT_CAB,
+    FT_CHM,
+    FT_DEB,
     FT_ELF,
+    FT_PMD,
+    FT_RPM,
+    FT_TAR,
+    FT_LZH,
+    FT_XAR,
     FT_ZIP,
     FT_RAR4,
     FT_RAR5,
@@ -74,10 +90,84 @@ typedef struct
 #define RAR_5_MAGIC_SIZE            8
 /* rar - stop */
 
+/* gz - start */
+#define GZ_MAGIC                    "\037\213"
+#define GZ_MAGIC_SIZE               2
+/* gz - stop */
+
+/* xz - start */
+#define XZ_MAGIC                    "\3757zXZ\000"
+#define XZ_MAGIC_SIZE               6
+/* xz - stop */
+
+/* 7z - start */
+#define Z7_MAGIC                    "7z\274\257'\034"
+#define Z7_MAGIC_SIZE               6
+/* 7z - stop */
+
+/* tar - start */
+#define TAR_MAGIC                   "ustar"
+#define TAR_MAGIC_SIZE              5
+#define TAR_MAGIC_OFFSET            257
+/* tar - stop */
+
+/* bz2 - start */
+#define BZ2_MAGIC                   "BZh"
+#define BZ2_MAGIC_SIZE              3
+/* bz2 - stop */
+
+/* Z - start */
+#define Z_MAGIC                     "\037\235"
+#define Z_MAGIC_SIZE                2
+/* Z - stop */
+
+/* cab - start */
+#define CAB_MAGIC                   "MSCF"
+#define CAB_MAGIC_SIZE              4
+/* cab - stop */
+
+/* arj - start */
+#define ARJ_MAGIC                   "`\352"
+#define ARJ_MAGIC_SIZE              2
+/* arj - stop */
+
+/* lzh - start */
+#define LZH_MAGIC                   "-lh5-"
+#define LZH_MAGIC_SIZE              5
+/* lzh - stop */
+
+/* xar - start */
+#define XAR_MAGIC                   "xar!"
+#define XAR_MAGIC_SIZE              4
+/* xar - stop */
+
+/* deb - start */
+#define DEB_MAGIC                   "!<arch>\n"
+#define DEB_MAGIC_SIZE              8
+/* deb - stop */
+
+/* pmd - start */
+#define PMD_MAGIC                   "PMD "
+#define PMD_MAGIC_SIZE              4
+/* pmd - stop */
+
+/* rpm - start */
+#define RPM_MAGIC                   "\355\253\356\333"
+#define RPM_MAGIC_SIZE              4
+/* rpm - stop */
+
+/* chm - start */
+#define CHM_MAGIC                   "ITSF"
+#define CHM_MAGIC_SIZE              4
+/* chm - stop */
+
+
 /* jar - start */
 #define JAR_MAGIC                   ""
 #define JAR_MAGIC_SIZE              4
 /* jar - end   */
+
+
 
 FileRet         file_parse              (C_IN const char *filename, C_OUT FileTypeDetail *detail);
 const char*     file_error_string       (C_IN FileRet fileRet);

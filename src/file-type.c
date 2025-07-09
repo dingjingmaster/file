@@ -32,33 +32,11 @@ static inline bool check_is_java_source (const char* buffer)
     return false;
 }
 
-static inline bool check_is_zip (const char* buffer)
+static inline bool check_is_magic (const char* buffer, cint64 bufferLen, const char* magic, int32_t magicLen, cint64 offset)
 {
-    if (!memcmp(buffer, ZIP_MAGIC, ZIP_MAGIC_SIZE)) {
-        return true;
-    }
-    return false;
-}
+    C_RETURN_VAL_IF_FAIL(buffer && magic && offset + magicLen < bufferLen, false);
 
-static inline bool check_is_rar4 (const char* buffer)
-{
-    if (!memcmp(buffer, RAR_4_MAGIC, RAR_4_MAGIC_SIZE)) {
-        return true;
-    }
-    return false;
-}
-
-static inline bool check_is_rar5 (const char* buffer)
-{
-    if (!memcmp(buffer, RAR_5_MAGIC, RAR_5_MAGIC_SIZE)) {
-        return true;
-    }
-    return false;
-}
-
-static inline bool check_is_elf (const char* buffer)
-{
-    if (!memcmp(buffer, ELF_MAGIC, ELF_MAGIC_SIZE)) {
+    if (!memcmp(buffer + offset, magic, magicLen)) {
         return true;
     }
     return false;
@@ -101,6 +79,10 @@ FileRet file_parse(const char* filename, FileTypeDetail* detail)
         }
         C_RETURN_VAL_IF_FAIL(S_ISREG(st.st_mode), RET_ERROR_FILE_TYPE);
         fileSize = st.st_size;
+        if (fileSize == 0) {
+            detail->fileType = FT_EMPTY;
+            return RET_SUCCESS;
+        }
     }
 
     do {
@@ -116,30 +98,59 @@ FileRet file_parse(const char* filename, FileTypeDetail* detail)
         if (c_str_has_suffix(fileName, ".java") && check_is_java_source(fileHeader)) {
             detail->fileType = FT_JAVA_SOURCE;
         }
-        else if (c_str_has_suffix(fileName, ".zip") && check_is_zip(fileHeader)) {
+        else if (check_is_magic(fileHeader, fileSize, ZIP_MAGIC, ZIP_MAGIC_SIZE, 0)) {
             detail->fileType = FT_ZIP;
         }
-        else if (c_str_has_suffix(filename, ".rar") && check_is_rar4(fileHeader)) {
+        else if (check_is_magic(fileHeader, fileSize, RAR_4_MAGIC, RAR_4_MAGIC_SIZE, 0)) {
             detail->fileType = FT_RAR4;
         }
-        else if (c_str_has_suffix(filename, ".rar") && check_is_rar5(fileHeader)) {
+        else if (check_is_magic(fileHeader, fileSize, RAR_5_MAGIC, RAR_5_MAGIC_SIZE, 0)) {
             detail->fileType = FT_RAR5;
         }
+        else if (check_is_magic(fileHeader, fileSize, GZ_MAGIC, GZ_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_GZ;
+        }
+        else if (check_is_magic(fileHeader, fileSize, XZ_MAGIC, XZ_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_XZ;
+        }
+        else if (check_is_magic(fileHeader, fileSize, Z7_MAGIC, Z7_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_7Z;
+        }
+        else if (check_is_magic(fileHeader, fileSize, TAR_MAGIC, TAR_MAGIC_SIZE, TAR_MAGIC_OFFSET)) {
+            detail->fileType = FT_TAR;
+        }
+        else if (check_is_magic(fileHeader, fileSize, BZ2_MAGIC, BZ2_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_BZ2;
+        }
+        else if (check_is_magic(fileHeader, fileSize, Z_MAGIC, Z_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_Z;
+        }
+        else if (check_is_magic(fileHeader, fileSize, CAB_MAGIC, CAB_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_CAB;
+        }
+        else if (check_is_magic(fileHeader, fileSize, ARJ_MAGIC, ARJ_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_ARJ;
+        }
+        else if (check_is_magic(fileHeader, fileSize, LZH_MAGIC, LZH_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_LZH;
+        }
+        else if (check_is_magic(fileHeader, fileSize, XAR_MAGIC, XAR_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_XAR;
+        }
+        else if (check_is_magic(fileHeader, fileSize, DEB_MAGIC, DEB_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_DEB;
+        }
+        else if (check_is_magic(fileHeader, fileSize, PMD_MAGIC, PMD_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_PMD;
+        }
+        else if (check_is_magic(fileHeader, fileSize, RPM_MAGIC, RPM_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_RPM;
+        }
+        else if (check_is_magic(fileHeader, fileSize, CHM_MAGIC, CHM_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_CHM;
+        }
         else if (
-            c_str_has_suffix(filename, ".gz")
-            || c_str_has_suffix(filename, ".tar")
-            || c_str_has_suffix(filename, ".bz2")
-            || c_str_has_suffix(filename, ".7z")
-            || c_str_has_suffix(filename, ".xz")
-            || c_str_has_suffix(filename, ".z")
-            || c_str_has_suffix(filename, ".cab")
-            || c_str_has_suffix(filename, ".arj")
-            || c_str_has_suffix(filename, ".lzh")
-            || c_str_has_suffix(filename, ".xar")
-            || c_str_has_suffix(filename, ".pmd")
-            || c_str_has_suffix(filename, ".deb")
-            || c_str_has_suffix(filename, ".rpm")
-            || c_str_has_suffix(filename, ".chm")
+            c_str_has_suffix(filename, ".chm")
             || c_str_has_suffix(filename, ".iso")
             || c_str_has_suffix(filename, ".vhd")
             || c_str_has_suffix(filename, ".wim")
@@ -151,7 +162,7 @@ FileRet file_parse(const char* filename, FileTypeDetail* detail)
         }
         else {
             // 其他扩展名
-            if (check_is_elf(fileHeader)) {
+            if (check_is_magic(fileHeader, fileSize, ELF_MAGIC, ELF_MAGIC_SIZE, 0)) {
                 detail->fileType = FT_ELF;
             }
         }
@@ -193,8 +204,53 @@ const char* file_get_type_string(FileTypeDetail* detail)
         case FT_DIR: {
             return "Directory";
         }
+        case FT_EMPTY: {
+            return "Empty file";
+        }
         case FT_ELF: {
             return "ELF file";
+        }
+        case FT_GZ: {
+            return "GZ file";
+        }
+        case FT_XZ: {
+            return "XZ file";
+        }
+        case FT_7Z: {
+            return "7-Zip file";
+        }
+        case FT_CAB: {
+            return "Microsoft Cabinet file";
+        }
+        case FT_ARJ: {
+            return "ARJ(Archived by Robert Jung) file";
+        }
+        case FT_LZH: {
+            return "LZH(Lempel-Ziv-Haruyasu) file";
+        }
+        case FT_XAR: {
+            return "XAR(eXtensible ARchive Format) file";
+        }
+        case FT_DEB: {
+            return "Debian-binary deb file";
+        }
+        case FT_PMD: {
+            return "PMD(Polygon Model Data) file";
+        }
+        case FT_RPM: {
+            return "RPM(Red Hat Package Manager) File";
+        }
+        case FT_CHM: {
+            return "CHM(Compiled HTML Help) File";
+        }
+        case FT_Z: {
+            return "Z compress'd file";
+        }
+        case FT_TAR: {
+            return "TAR file";
+        }
+        case FT_BZ2: {
+            return "bzip2 file";
         }
         case FT_ZIP: {
             return "Zip file";
