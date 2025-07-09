@@ -52,6 +52,7 @@ typedef enum
     FT_CHM,
     FT_DEB,
     FT_ELF,
+    FT_EXE,
     FT_ISO,
     FT_JAR,
     FT_LZH,
@@ -221,6 +222,11 @@ typedef struct
 #define CLASS_MAGIC                 "\312\376\272\276"
 #define CLASS_MAGIC_SIZE            4
 /* class - end   */
+
+/* exe - start */
+#define EXE_MAGIC                   "MZ"
+#define EXE_MAGIC_SIZE              2
+/* exe - end   */
 
 FileRet         file_parse              (C_IN const char *filename, C_OUT FileTypeDetail *detail);
 const char*     file_error_string       (C_IN FileRet fileRet);

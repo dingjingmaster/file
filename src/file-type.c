@@ -170,6 +170,9 @@ FileRet file_parse(const char* filename, FileTypeDetail* detail)
         else if (check_is_magic(fileHeader, fileSize, CLASS_MAGIC, CLASS_MAGIC_SIZE, 0)) {
             detail->fileType = FT_CLASS;
         }
+        else if (check_is_magic(fileHeader, fileSize, EXE_MAGIC, EXE_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_EXE;
+        }
         else if (check_is_magic(fileHeader, fileSize, DEB_MAGIC, DEB_MAGIC_SIZE, 0)) {
             detail->fileType = FT_DEB;
         }
@@ -327,6 +330,9 @@ const char* file_get_type_string(FileTypeDetail* detail)
         }
         case FT_CLASS: {
             return "Compiled Java class data file";
+        }
+        case FT_EXE: {
+            return "Window executable file";
         }
         case FT_TAR: {
             return "TAR file";

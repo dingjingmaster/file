@@ -29,3 +29,4 @@
 - [x] mar
 - [x] jar
 - [x] class
+- [x] exe
