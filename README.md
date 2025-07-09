@@ -22,3 +22,8 @@
 - [x] zip 文件
 - [x] rar 文件
 - [x] java 源码文件
+- [x] iso
+- [x] vhd
+- [x] wim
+- [x] swf
+- [x] mar

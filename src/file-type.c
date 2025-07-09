@@ -42,6 +42,16 @@ static inline bool check_is_magic (const char* buffer, cint64 bufferLen, const c
     return false;
 }
 
+static inline bool check_is_magic_vhd (const char* buffer, cint64 bufferLen)
+{
+    C_RETURN_VAL_IF_FAIL(buffer && bufferLen > 512, false);
+
+    if (!memcmp(buffer + bufferLen - 512, VHD_MAGIC, VHD_MAGIC_SIZE)) {
+        return true;
+    }
+    return false;
+}
+
 
 FileRet file_parse(const char* filename, FileTypeDetail* detail)
 {
@@ -149,16 +159,32 @@ FileRet file_parse(const char* filename, FileTypeDetail* detail)
         else if (check_is_magic(fileHeader, fileSize, CHM_MAGIC, CHM_MAGIC_SIZE, 0)) {
             detail->fileType = FT_CHM;
         }
-        else if (
-            c_str_has_suffix(filename, ".chm")
-            || c_str_has_suffix(filename, ".iso")
-            || c_str_has_suffix(filename, ".vhd")
-            || c_str_has_suffix(filename, ".wim")
-            || c_str_has_suffix(filename, ".mdf")
-            || c_str_has_suffix(filename, ".nri")
-            || c_str_has_suffix(filename, ".swf")
-            || c_str_has_suffix(filename, ".mar")) {
-            // detail->fileType = FT_ZIP;
+        else if (check_is_magic(fileHeader, fileSize, ISO_MAGIC, ISO_MAGIC_SIZE, ISO_MAGIC_OFFSET)) {
+            detail->fileType = FT_ISO;
+        }
+        else if (check_is_magic_vhd(fileHeader, fileSize)) {
+            detail->fileType = FT_VHD;
+        }
+        else if (check_is_magic(fileHeader, fileSize, WIM_MAGIC, WIM_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_WIM;
+        }
+        else if (check_is_magic(fileHeader, fileSize, SWF_MAGIC_PURE, SWF_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_SWF_PURE;
+        }
+        else if (check_is_magic(fileHeader, fileSize, SWF_MAGIC_ZLIB, SWF_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_SWF_ZLIB;
+        }
+        else if (check_is_magic(fileHeader, fileSize, SWF_MAGIC_LZMA, SWF_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_SWF_LZMA;
+        }
+        else if (check_is_magic(fileHeader, fileSize, MAR_MAGIC_100, MAR_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_MAR_100;
+        }
+        else if (check_is_magic(fileHeader, fileSize, MAR_MAGIC_120, MAR_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_MAR_120;
+        }
+        else if (check_is_magic(fileHeader, fileSize, MAR_MAGIC_130, MAR_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_MAR_130;
         }
         else {
             // 其他扩展名
@@ -245,6 +271,33 @@ const char* file_get_type_string(FileTypeDetail* detail)
         }
         case FT_Z: {
             return "Z compress'd file";
+        }
+        case FT_ISO: {
+            return "ISO 9660 file";
+        }
+        case FT_VHD: {
+            return "VHD(Virtual Hard Disk) file";
+        }
+        case FT_WIM: {
+            return "WIM(Windows Imaging Format) file";
+        }
+        case FT_SWF_PURE: {
+            return "SWF no compress file";
+        }
+        case FT_SWF_ZLIB: {
+            return "SWF zlib compress'd file";
+        }
+        case FT_SWF_LZMA: {
+            return "SWF lzma compress'd file";
+        }
+        case FT_MAR_100: {
+            return "MAR 100";
+        }
+        case FT_MAR_120: {
+            return "MAR 120";
+        }
+        case FT_MAR_130: {
+            return "MAR 130";
         }
         case FT_TAR: {
             return "TAR file";

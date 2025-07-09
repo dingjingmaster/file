@@ -52,14 +52,27 @@ typedef enum
     FT_CHM,
     FT_DEB,
     FT_ELF,
+    FT_ISO,
+    FT_LZH,
     FT_PMD,
     FT_RPM,
     FT_TAR,
-    FT_LZH,
+    FT_VHD,
+    FT_WIM,
     FT_XAR,
     FT_ZIP,
+
     FT_RAR4,
     FT_RAR5,
+
+    FT_SWF_PURE,
+    FT_SWF_ZLIB,
+    FT_SWF_LZMA,
+
+    FT_MAR_100,
+    FT_MAR_120,
+    FT_MAR_130,
+
     FT_JAVA_SOURCE,
 } FileType;
 
@@ -161,6 +174,40 @@ typedef struct
 #define CHM_MAGIC_SIZE              4
 /* chm - stop */
 
+/* iso - start */
+#define ISO_MAGIC                   "CD001"
+#define ISO_MAGIC_SIZE              5
+#define ISO_MAGIC_OFFSET            32769
+/* iso - stop */
+
+/* vhd - start */
+#define VHD_MAGIC                   "conectix"
+#define VHD_MAGIC_SIZE              8
+/* vhd - stop */
+
+/* wim - start */
+#define WIM_MAGIC                   "MSWIM\0\0\0"
+#define WIM_MAGIC_SIZE              8
+/* wim - stop */
+
+/* mdf - start */
+#define MDF_MAGIC                   "MSWIM\0\0\0"
+#define MDF_MAGIC_SIZE              8
+/* mdf - stop */
+
+/* swf - start */
+#define SWF_MAGIC_PURE              "FWS"
+#define SWF_MAGIC_ZLIB              "CWS"
+#define SWF_MAGIC_LZMA              "ZWS"
+#define SWF_MAGIC_SIZE              8
+/* swf - stop */
+
+/* mar - start */
+#define MAR_MAGIC_100               "MAR100"
+#define MAR_MAGIC_120               "MAR120"
+#define MAR_MAGIC_130               "MAR130"
+#define MAR_MAGIC_SIZE              6
+/* mar - stop */
 
 /* jar - start */
 #define JAR_MAGIC                   ""
