@@ -167,6 +167,9 @@ FileRet file_parse(const char* filename, FileTypeDetail* detail)
         else if (check_is_magic(fileHeader, fileSize, XAR_MAGIC, XAR_MAGIC_SIZE, 0)) {
             detail->fileType = FT_XAR;
         }
+        else if (check_is_magic(fileHeader, fileSize, CLASS_MAGIC, CLASS_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_CLASS;
+        }
         else if (check_is_magic(fileHeader, fileSize, DEB_MAGIC, DEB_MAGIC_SIZE, 0)) {
             detail->fileType = FT_DEB;
         }
@@ -321,6 +324,9 @@ const char* file_get_type_string(FileTypeDetail* detail)
         }
         case FT_JAR: {
             return "JAR(Java Archive) file";
+        }
+        case FT_CLASS: {
+            return "Compiled Java class data file";
         }
         case FT_TAR: {
             return "TAR file";

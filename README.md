@@ -28,3 +28,4 @@
 - [x] swf
 - [x] mar
 - [x] jar
+- [x] class

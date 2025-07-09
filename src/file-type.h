@@ -66,6 +66,8 @@ typedef enum
     FT_RAR4,
     FT_RAR5,
 
+    FT_CLASS,
+
     FT_SWF_PURE,
     FT_SWF_ZLIB,
     FT_SWF_LZMA,
@@ -215,7 +217,10 @@ typedef struct
 #define JAR_MAGIC_SIZE              10
 /* jar - end   */
 
-
+/* class - start */
+#define CLASS_MAGIC                 "\312\376\272\276"
+#define CLASS_MAGIC_SIZE            4
+/* class - end   */
 
 FileRet         file_parse              (C_IN const char *filename, C_OUT FileTypeDetail *detail);
 const char*     file_error_string       (C_IN FileRet fileRet);
