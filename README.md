@@ -30,3 +30,5 @@
 - [x] jar
 - [x] class
 - [x] exe
+- [x] xml
+- [x] python

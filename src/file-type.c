@@ -13,7 +13,9 @@
 
 static inline const char* get_file_name (const char* filePath)
 {
-    return strrchr(filePath, '/') + 1;
+    const char* fileName = strrchr(filePath, '/');
+
+    return fileName ? fileName + 1 : filePath;
 }
 
 static inline bool check_is_java_source (const char* buffer)
@@ -172,6 +174,33 @@ FileRet file_parse(const char* filename, FileTypeDetail* detail)
         }
         else if (check_is_magic(fileHeader, fileSize, EXE_MAGIC, EXE_MAGIC_SIZE, 0)) {
             detail->fileType = FT_EXE;
+        }
+        else if (check_is_magic(fileHeader, fileSize, XML_MAGIC, XML_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_XML;
+        }
+        else if (check_is_magic(fileHeader, fileSize, PYTHON_MAGIC_2_07, PYTHON_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_PYTHON_2_07;
+        }
+        else if (check_is_magic(fileHeader, fileSize, PYTHON_MAGIC_3_07, PYTHON_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_PYTHON_3_07;
+        }
+        else if (check_is_magic(fileHeader, fileSize, PYTHON_MAGIC_3_08, PYTHON_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_PYTHON_3_08;
+        }
+        else if (check_is_magic(fileHeader, fileSize, PYTHON_MAGIC_3_09, PYTHON_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_PYTHON_3_09;
+        }
+        else if (check_is_magic(fileHeader, fileSize, PYTHON_MAGIC_3_10, PYTHON_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_PYTHON_3_10;
+        }
+        else if (check_is_magic(fileHeader, fileSize, PYTHON_MAGIC_3_11, PYTHON_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_PYTHON_3_11;
+        }
+        else if (check_is_magic(fileHeader, fileSize, PYTHON_MAGIC_3_12, PYTHON_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_PYTHON_3_12;
+        }
+        else if (check_is_magic(fileHeader, fileSize, PYTHON_MAGIC_3_13, PYTHON_MAGIC_SIZE, 0)) {
+            detail->fileType = FT_PYTHON_3_13;
         }
         else if (check_is_magic(fileHeader, fileSize, DEB_MAGIC, DEB_MAGIC_SIZE, 0)) {
             detail->fileType = FT_DEB;
@@ -333,6 +362,33 @@ const char* file_get_type_string(FileTypeDetail* detail)
         }
         case FT_EXE: {
             return "Window executable file";
+        }
+        case FT_XML: {
+            return "XML file";
+        }
+        case FT_PYTHON_2_07: {
+            return "Byte-compiled Python module for CPython 2.07 file";
+        }
+        case FT_PYTHON_3_07: {
+            return "Byte-compiled Python module for CPython 3.07 file";
+        }
+        case FT_PYTHON_3_08: {
+            return "Byte-compiled Python module for CPython 3.08 file";
+        }
+        case FT_PYTHON_3_09: {
+            return "Byte-compiled Python module for CPython 3.09 file";
+        }
+        case FT_PYTHON_3_10: {
+            return "Byte-compiled Python module for CPython 3.10 file";
+        }
+        case FT_PYTHON_3_11: {
+            return "Byte-compiled Python module for CPython 3.11 file";
+        }
+        case FT_PYTHON_3_12: {
+            return "Byte-compiled Python module for CPython 3.12 file";
+        }
+        case FT_PYTHON_3_13: {
+            return "Byte-compiled Python module for CPython 3.13 file";
         }
         case FT_TAR: {
             return "TAR file";

@@ -62,6 +62,7 @@ typedef enum
     FT_VHD,
     FT_WIM,
     FT_XAR,
+    FT_XML,
     FT_ZIP,
 
     FT_RAR4,
@@ -76,6 +77,15 @@ typedef enum
     FT_MAR_100,
     FT_MAR_120,
     FT_MAR_130,
+
+    FT_PYTHON_2_07,
+    FT_PYTHON_3_07,
+    FT_PYTHON_3_08,
+    FT_PYTHON_3_09,
+    FT_PYTHON_3_10,
+    FT_PYTHON_3_11,
+    FT_PYTHON_3_12,
+    FT_PYTHON_3_13,
 
     FT_JAVA_SOURCE,
 } FileType;
@@ -227,6 +237,23 @@ typedef struct
 #define EXE_MAGIC                   "MZ"
 #define EXE_MAGIC_SIZE              2
 /* exe - end   */
+
+/* xml - start */
+#define XML_MAGIC                   "<?xml"
+#define XML_MAGIC_SIZE              5
+/* xml - end   */
+
+/* python - start */
+#define PYTHON_MAGIC_2_07           "\003\363\015\012"  // ok
+#define PYTHON_MAGIC_3_07           "3\014\015\012"
+#define PYTHON_MAGIC_3_08           "\356\014\015\012"
+#define PYTHON_MAGIC_3_09           "\027\015\015\012"
+#define PYTHON_MAGIC_3_10           "o\015\015\012"     // ok
+#define PYTHON_MAGIC_3_11           "\247\015\015\012"  // ok
+#define PYTHON_MAGIC_3_12           "\313\015\015\012"  // ok
+#define PYTHON_MAGIC_3_13           "\363\015\015\012"  // ok
+#define PYTHON_MAGIC_SIZE           4
+/* python - end   */
 
 FileRet         file_parse              (C_IN const char *filename, C_OUT FileTypeDetail *detail);
 const char*     file_error_string       (C_IN FileRet fileRet);
