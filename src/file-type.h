@@ -255,7 +255,8 @@ typedef struct
 #define PYTHON_MAGIC_SIZE           4
 /* python - end   */
 
-FileRet         file_parse              (C_IN const char *filename, C_OUT FileTypeDetail *detail);
+FileRet         file_parse              (C_IN const char* filename, C_OUT FileTypeDetail *detail);
+FileRet         file_parse_header       (C_IN const char* header, C_IN int64_t headerLen, C_IN const char* fileBaseName, C_OUT FileTypeDetail* detail);
 const char*     file_error_string       (C_IN FileRet fileRet);
 const char*     file_get_type_string    (C_IN FileTypeDetail* detail);
 
